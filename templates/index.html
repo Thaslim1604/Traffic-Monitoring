@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traffic Monitoring System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="logo">
+      <h2>TrafficSense</h2>
+      <p>Live Monitoring System</p>
+    </div>
+    <nav>
+      <a href="#" class="nav-item active">Dashboard</a>
+      <a href="#" class="nav-item">Live Feed</a>
+      <a href="#" class="nav-item">Analytics</a>
+      <a href="#" class="nav-item">Settings</a>
+    </nav>
+    <div class="model-info">
+      <p class="model-label">Model</p>
+      <p class="model-name">YOLOv8n</p>
+      <p class="model-status">● Connected</p>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="topbar">
+      <div>
+        <h1>Traffic Dashboard</h1>
+        <p class="subtitle">Real-time vehicle detection &amp; monitoring</p>
+      </div>
+      <span class="live-badge">● LIVE</span>
+    </div>
+
+    <div class="metrics">
+      <div class="metric-card">
+        <p class="metric-label">Total Vehicles</p>
+        <p class="metric-value" id="total">0</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Cars</p>
+        <p class="metric-value" id="cars">0</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Trucks</p>
+        <p class="metric-value" id="trucks">0</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Buses</p>
+        <p class="metric-value" id="buses">0</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Motorcycles</p>
+        <p class="metric-value" id="bikes">0</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Density Level</p>
+        <p class="metric-value" id="density">Low</p>
+      </div>
+    </div>
+
+    <div class="feed-section">
+      <div class="feed-card">
+        <div class="feed-header">
+          <span class="feed-title">Live Camera Feed</span>
+          <span class="feed-tag">YOLOv8 Detection Active</span>
+        </div>
+        <img src="{{ url_for('video_feed') }}" class="video-feed" alt="Live Feed"/>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function updateStats() {
+      fetch('/stats')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('total').textContent = data.total;
+          document.getElementById('cars').textContent = data.cars;
+          document.getElementById('trucks').textContent = data.trucks;
+          document.getElementById('buses').textContent = data.buses;
+          document.getElementById('bikes').textContent = data.bikes;
+
+          const densityEl = document.getElementById('density');
+          densityEl.textContent = data.density;
+          densityEl.className = 'metric-value density-' + data.density.toLowerCase();
+        });
+    }
+    setInterval(updateStats, 1000);
+  </script>
+
+</body>
+</html>
